@@ -19,7 +19,7 @@ if ($handle) {
 		echo $result_file."<br><br><br><hr><hr><br><br><br>";
     }
 
-    fclose($handle);
+	fclose($handle);
 	
 	$fp = fopen('./wdata.txt', 'w');
 	fwrite($fp, $result_file);
