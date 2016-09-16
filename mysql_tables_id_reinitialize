@@ -1,7 +1,7 @@
 <?php
-$filename = "./data.txt";
-$result_file = '';
-$handle = fopen($filename, "r");
+$from_file = "./data3.txt";
+$out_file = "./wdata3.txt";
+$result_content = '';
 
 function show_data($arr){
 	$iter = 0;
@@ -15,37 +15,38 @@ function show_data($arr){
 	}
 }
 
-if ($handle) {
-		while (($line = fgets($handle)) !== false) {
-			$arr_preg = array();
-			$pattern = "/(VALUES )\(([0-9]*)(,'.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,)/i";
-
-			try{
-				preg_match_all($pattern, $line, $arr_preg);			
-				echo "arr_preg - ".$arr_preg[0][0]."<br><br><hr>";
-				
-				$interesult = $arr_preg[1][0].'('.(intval($arr_preg[2][0])+500).$arr_preg[3][0].(intval($arr_preg[4][0])+500).$arr_preg[5][0];
-				echo "interesult - ".$interesult."<br><hr><br>";
-				
-				$result_file .= preg_replace($pattern, $interesult, $line);				
-				echo "result_file - ".$result_file."<br><hr><br>";
-				
-				show_data($arr_preg);				
-				echo 'res is ' . (intval($arr_preg[4][0])+500)."<br><hr><hr><br><br><br>";
-			}
-			catch(Exception $e){
-				echo '<br>Error: ',  $e->getMessage();
-			}
-		}
+$handle = fopen($from_file, "r");
+if ($handle){
+	while (($line = fgets($handle)) !== false) {
+		$arr_preg = array();
+		$pattern = "/(VALUES )\(([0-9]*)(,'.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,)/i";
 
 		try{
-			$fp = fopen('./wdata.txt', 'w');
-			fwrite($fp, $result_file);
-			fclose($fp);
+			preg_match_all($pattern, $line, $arr_preg);			
+			echo "arr_preg - ".$arr_preg[0][0]."<br><br><hr>";
+			
+			$interesult = $arr_preg[1][0].'('.(intval($arr_preg[2][0])+500).$arr_preg[3][0].(intval($arr_preg[4][0])+500).$arr_preg[5][0];
+			echo "interesult - ".$interesult."<br><hr><br>";
+			
+			$result_content .= preg_replace($pattern, $interesult, $line);				
+			echo "result_content - ".$result_content."<br><hr><br>";
+			
+			show_data($arr_preg);				
+			echo 'res is ' . (intval($arr_preg[4][0])+500)."<br><hr><hr><br><br><br>";
 		}
 		catch(Exception $e){
 			echo '<br>Error: ',  $e->getMessage();
 		}
+	}
+
+	try{
+		$fp = fopen($out_file, 'w');
+		fwrite($fp, $result_content);
+		fclose($fp);
+	}
+	catch(Exception $e){
+		echo '<br>Error: ',  $e->getMessage();
+	}
 } else {
     // error opening the file.
 } 
