@@ -15,17 +15,30 @@ function show_data($arr){
 	}
 }
 
+function change_template($template){
+	switch($template){
+		case 8:
+			return 6;
+		case 21:
+			return 7;
+		case 9:
+			return 8;
+		case 3:
+			return 0;
+	}
+}
+
 $handle = fopen($from_file, "r");
 if ($handle){
 	while (($line = fgets($handle)) !== false) {
 		$arr_preg = array();
-		$pattern = "/(VALUES )\(([0-9]*)(,'.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,)/i";
+		$pattern = "/(VALUES )\(([0-9]*)(,'.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,[0-9]*,'.*?(?=\',)','.*?(?=\',)',[0-9]*,)([0-9]*)(,)/i";
 
 		try{
 			preg_match_all($pattern, $line, $arr_preg);			
 			echo "arr_preg - ".$arr_preg[0][0]."<br><br><hr>";
 			
-			$interesult = $arr_preg[1][0].'('.(intval($arr_preg[2][0])+500).$arr_preg[3][0].(intval($arr_preg[4][0])+500).$arr_preg[5][0];
+			$interesult = $arr_preg[1][0].'('.(intval($arr_preg[2][0])+500).$arr_preg[3][0].(intval($arr_preg[4][0])+500).$arr_preg[5][0].change_template($arr_preg[6][0]).$arr_preg[7][0];
 			echo "interesult - ".$interesult."<br><hr><br>";
 			
 			$result_content .= preg_replace($pattern, $interesult, $line);				
