@@ -1,47 +1,51 @@
 <?php
-$filename = "./data3.txt";
-$count = count( file( $filename));
-
+$filename = "./data.txt";
 $result_file = '';
-
 $handle = fopen($filename, "r");
+
+function show_data($arr){
+	$iter = 0;
+	foreach($arr as $k => $v){
+		if(is_array($v))
+			show_data($v);
+		else{
+			$iter++;
+			echo "<b>k:</b>$k => <b>v$iter:</b>$v <br>";			
+		}
+	}
+}
+
 if ($handle) {
-	
 		while (($line = fgets($handle)) !== false) {
 			$arr_preg = array();
-			#$pattern = "/(VALUES )\(([0-9]*)(,'[^\',]*','[^\',]*','[^\',]*','[^\',]*','[^\',]*','[^\',]*','[^\',]*',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,)/i";
-			$pattern = "/(VALUES )\(([0-9]*)(,'.+?(?=\',)','.+?(?=\',)','.+?(?=\',)','.+?(?=\',)','.+?(?=\',)','.+?(?=\',)','.+?(?=\',)',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,)/i";
+			$pattern = "/(VALUES )\(([0-9]*)(,'.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)','.*?(?=\',)',[0-9]*,[0-9]*,[0-9]*,)([0-9]*)(,)/i";
 
 			try{
-				preg_match_all($pattern, $line, $arr_preg);
-			
+				preg_match_all($pattern, $line, $arr_preg);			
 				echo "arr_preg - ".$arr_preg[0][0]."<br><br><hr>";
+				
 				$interesult = $arr_preg[1][0].'('.(intval($arr_preg[2][0])+500).$arr_preg[3][0].(intval($arr_preg[4][0])+500).$arr_preg[5][0];
-				echo "interesult - ".$interesult."<br><br><hr>";
-				$result_file .= preg_replace($pattern, $interesult, $line);
-			
-				echo "result_file - ".$result_file."<br><br><br><hr><hr><br><br><br>";
+				echo "interesult - ".$interesult."<br><hr><br>";
+				
+				$result_file .= preg_replace($pattern, $interesult, $line);				
+				echo "result_file - ".$result_file."<br><hr><br>";
+				
+				show_data($arr_preg);				
+				echo 'res is ' . (intval($arr_preg[4][0])+500)."<br><hr><hr><br><br><br>";
 			}
 			catch(Exception $e){
 				echo '<br>Error: ',  $e->getMessage();
-				/*$fp = fopen('./errorlog.txt', 'w');
-				fwrite($fp, 'Error: ',  $e->getMessage(), "\n");
-				fclose($fp);*/
 			}
 		}
 
 		try{
-			$fp = fopen('./wdata3.txt', 'w');
+			$fp = fopen('./wdata.txt', 'w');
 			fwrite($fp, $result_file);
 			fclose($fp);
 		}
 		catch(Exception $e){
 			echo '<br>Error: ',  $e->getMessage();
-			/*$fp = fopen('./errorlog2.txt', 'w');
-			fwrite($fp, 'Error: ',  $e->getMessage(), "\n");
-			fclose($fp);*/
 		}
-	
 } else {
     // error opening the file.
 } 
