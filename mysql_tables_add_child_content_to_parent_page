@@ -1,0 +1,63 @@
+<?php
+
+$servername = "***";
+$username = "***";
+$password = "***";
+$dbname = "***";
+$keyword = "Configuration";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+$conn->set_charset("utf8");
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT id,content,parent FROM modx_site_content WHERE pagetitle LIKE '%".$keyword."%'";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+        echo "id: " . $row["id"]. " - parent: <b>" . $row["parent"]. "</b> <br>";
+        $current_id = $row["id"];
+        $parent_id = $row["parent"];
+        $content = $row["content"];
+
+        $sql2 = 'SELECT id,content FROM modx_site_content WHERE modx_site_content.id = \''.$row["parent"].'\'';
+        //echo $sql2;
+        $result2 = $conn->query($sql2);
+        //echo '$result2->num_rows '.$result2->num_rows. '<br>';
+        if ($result2->num_rows > 0) {
+          $row2 = $result2->fetch_assoc();
+
+          $old_content = $row2["content"];
+          //echo "old_content <br> $old_content<br><br><br><hr><br><br>";
+
+          $new_content = $old_content. ' <p>'.$keyword.':</p> ' .$content;
+
+          $sql = "UPDATE modx_site_content SET content='".$new_content."' WHERE modx_site_content.id='".$parent_id."'";
+
+          if ($conn->query($sql) === TRUE) {
+              echo "Record updated successfully";
+          } else {
+              echo "Error updating record: " . $conn->error;
+          }
+
+          $sql = "DELETE FROM modx_site_content WHERE modx_site_content.id='".$current_id."'";
+
+          if ($conn->query($sql) === TRUE) {
+              echo "Record deleted successfully";
+          } else {
+              echo "Error deleting record: " . $conn->error;
+          }
+
+        }
+    }
+} else {
+    echo "0 results";
+}
+$conn->close();
+
+?>
