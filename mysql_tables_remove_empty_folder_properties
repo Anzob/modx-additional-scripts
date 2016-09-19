@@ -1,0 +1,46 @@
+<?php
+$servername = "***";
+$username = "***";
+$password = "***";
+$dbname = "***";
+$property_name = "isfolder";
+$property_value_old = "1";
+$property_value = "0";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+$conn->set_charset("utf8");
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT id FROM modx_site_content WHERE ".$property_name." = '".$property_value_old."'";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  while($row = $result->fetch_assoc()) {
+    $sql2 = "SELECT id FROM modx_site_content WHERE modx_site_content.parent = '".$row["id"]."'";
+    $result2 = $conn->query($sql2);
+    //echo '$result2->num_rows '.$result2->num_rows. '<br>';
+    if ($result2->num_rows > 0) {
+      echo $row["id"].' has '.$result2->num_rows.' childs<br>';
+    }
+    else {
+      echo '-'.$row["id"].' has\'t childs<br>';
+
+      $sql3 = "UPDATE modx_site_content SET modx_site_content.".$property_name." = '".$property_value."' WHERE modx_site_content.id='".$row["id"]."'";
+      //echo 'sql '.$sql.'<br>';
+      if ($conn->query($sql3) === TRUE) {
+          echo "Record updated successfully<br>";
+      } else {
+          echo "Error updating record: " . $conn->error . "<br>";
+      }
+    }
+  }
+} else {
+    echo "0 results";
+}
+$conn->close();
+
+?>
