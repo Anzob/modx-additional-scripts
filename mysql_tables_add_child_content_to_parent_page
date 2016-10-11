@@ -6,7 +6,7 @@ $password = "***";
 $dbname = "***";
 
 if(isset($_GET['kw']))
-	$keyword = htmlspecialchars($_GET['kword']);
+	$keyword = htmlspecialchars($_GET['kw']);
 else
 	$keyword = "Configuration";
 
