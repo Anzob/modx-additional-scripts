@@ -1,9 +1,21 @@
 <?php
-$from_file = "./data4.txt";
-$out_file = "./wdata4.txt";
-$result_content = '';
-$id_tab = 1900;
 
+$from_file = "./data1.txt";
+if(isset($_GET['ff']))
+	$from_file = './'.htmlspecialchars($_GET['ff']);
+
+$out_file = "./wdata1.txt";
+if(isset($_GET['of']))
+	$out_file = './'.htmlspecialchars($_GET['of']);
+
+$id_tab = 500;
+if(isset($_GET['ids']))
+	$id_tab = htmlspecialchars($_GET['ids']);
+
+$result_content = '';
+
+echo $from_file.' '.$out_file;
+exit();
 function show_data($arr){
 	$iter = 0;
 	foreach($arr as $k => $v){
