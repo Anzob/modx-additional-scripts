@@ -1,9 +1,22 @@
 <?php
-$from_file = "./data5.txt";
-$out_file = "./wdata5.txt";
-$result_content = '';
+
+$from_file = "./data1.txt";
+if(isset($_GET['ff']))
+	$from_file = './'.htmlspecialchars($_GET['ff']);
+
+$out_file = "./wdata1.txt";
+if(isset($_GET['of']))
+	$out_file = './'.htmlspecialchars($_GET['of']);
+
 $id_tab = 500;
+if(isset($_GET['ids']))
+	$id_tab = htmlspecialchars($_GET['ids']);
+
 $id_tv = 27;
+if(isset($_GET['idtv']))
+	$id_tv = htmlspecialchars($_GET['idtv']);
+
+$result_content = '';
 
 function show_data($arr){
 	$iter = 0;
