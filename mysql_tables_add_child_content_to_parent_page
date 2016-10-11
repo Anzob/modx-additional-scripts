@@ -4,7 +4,11 @@ $servername = "***";
 $username = "***";
 $password = "***";
 $dbname = "***";
-$keyword = "Configuration";
+
+if(isset($_GET['kw']))
+	$keyword = htmlspecialchars($_GET['kword']);
+else
+	$keyword = "Configuration";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
