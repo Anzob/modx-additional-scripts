@@ -1,0 +1,6 @@
+<?php
+if(isset($pid) && isset($parts)){
+	$tvPr = $modx->getTemplateVarOutput(array($parts),$pid,$published=1);
+	return $tvPr[$parts];
+}
+?>
