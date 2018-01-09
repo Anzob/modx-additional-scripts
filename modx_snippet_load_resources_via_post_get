@@ -1,0 +1,53 @@
+<?php
+/*
+mode - 0(load childs), 1(check child count)
+parent page id - ppid;
+resources limit per request - rlpr;
+last resource id - lrid;
+loaded resource template - lrt;
+*/
+
+$_rlpr = $_lrid = 0;
+$_lrt = '@INLINE <p>[[+pagetitle]]</p>';
+
+if((empty($mode) && $mode != 0) || (empty($ppid) && $ppid != 0))
+    return 'error';
+
+if(!empty($rlpr)) // resources limit per request
+    $_rlpr = $rlpr;
+
+if(!empty($lrid) && $lrid != 0) // last resource id
+    $_lrid = intval($lrid) + 1;
+
+if(!empty($lrt)) //loaded resource template
+    $_lrt = $lrt;
+
+if($mode == 0){
+
+    $params = array(
+    'parents'   => intval($ppid),
+    'showLog'   => '0',
+    'depth'     => '1',
+    'offset'    => $_lrid,
+    'includeTVs'=> 'index_image,is_adv_text',
+    'processTVs'=> 'index_image',
+    'sortby'    => 'menuindex',
+    'sortdir'   => 'DESC',
+    'limit'     => intval($_rlpr),
+    'tpl'       => $_lrt
+    );
+
+    $result = $modx->runSnippet('pdoResources',$params);
+    return $result;
+}
+elseif($mode == 1){
+    $results = $modx->query("SELECT count(id) as uids FROM modx_site_content WHERE parent = ".intval($ppid));
+
+    if (!is_object($results)) {
+       return 'No result!';
+    }
+    else {
+        $r = $results->fetch(PDO::FETCH_ASSOC);
+        return $r['uids'];
+    }
+}
